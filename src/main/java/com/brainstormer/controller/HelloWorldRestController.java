@@ -20,8 +20,8 @@ public class HelloWorldRestController {
 
     /**
      * Retrieve all users
-     * @return
-     *  A list of all users
+     *
+     * @return A list of all users
      */
     @RequestMapping(value = "/user/", method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllUsers() {
@@ -34,10 +34,9 @@ public class HelloWorldRestController {
 
     /**
      * Retrieve a single user
-     * @param id
-     *      id of a user
-     * @return
-     *      A user
+     *
+     * @param id id of a user
+     * @return A user
      */
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
