@@ -1,3 +1,5 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+
 DROP TABLE IF EXISTS oauth_client_details;
 CREATE TABLE oauth_client_details (
   client_id VARCHAR(255) PRIMARY KEY,
@@ -87,7 +89,6 @@ CREATE TABLE user_role (
 );
 
 insert into user(id, name, login, password) values (1,'Roy-Boy','roy','$2a$06$A7AG6PwXR3O.5sDG38GXSOzLaURA4IOfrXxRh9LZSIAxnvZjJZKaa');
--- insert into user(id, name, login, password) values (1,'Roy','roy','spring');
 insert into user(id, name, login, password) values (2,'Craig','craig','$2a$06$Km2YyDTKAGscrh4tBeBMoeHjPiiVXPyArhqlwsBDZv8erJfIdfGP2');
 insert into user(id, name, login, password) values (3,'Greg','greg','$2a$06$fkDcD24gGh1sKhA81fp6g.XV3T6/C6CRuJ0xHwkXJuIGZmfB2YTJO');
  

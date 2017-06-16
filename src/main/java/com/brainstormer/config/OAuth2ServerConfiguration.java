@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,7 +20,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
@@ -30,12 +28,12 @@ import javax.sql.DataSource;
 @Configuration
 public class OAuth2ServerConfiguration {
 
+    // TODO: come up with a real Resource Id
 	private static final String RESOURCE_ID = "restservice";
 
 	@Configuration
 	@EnableResourceServer
-	protected static class ResourceServerConfiguration extends
-			ResourceServerConfigurerAdapter {
+	protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
 		@Autowired
 		private TokenStore tokenStore;
@@ -43,18 +41,20 @@ public class OAuth2ServerConfiguration {
 		@Override
 		public void configure(ResourceServerSecurityConfigurer resources) {
 			// @formatter:off
-			resources.tokenStore(tokenStore)
+			resources
+                    .tokenStore(tokenStore)
 					.resourceId(RESOURCE_ID);
 			// @formatter:on
 		}
 
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
+		    // TODO: want to move this config out possibly and do per-method config
 			// @formatter:off
 			http
 					.authorizeRequests()
-					.antMatchers("/users").hasRole("ADMIN")
-					.antMatchers("/greeting").hasRole("ADMIN");
+					    .antMatchers("/users").hasRole("ADMIN")
+					    .antMatchers("/greeting").hasRole("ADMIN");
 			// @formatter:on
 		}
 
@@ -62,15 +62,7 @@ public class OAuth2ServerConfiguration {
 
 	@Configuration
 	@EnableAuthorizationServer
-	protected static class AuthorizationServerConfiguration extends
-			AuthorizationServerConfigurerAdapter {
-
-		//		private TokenStore tokenStore = new InMemoryTokenStore();
-		@Bean
-		public PasswordEncoder passwordEncoder() {
-			return new BCryptPasswordEncoder();
-		}
-//		private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	protected static class AuthorizationServerConfiguration extends  AuthorizationServerConfigurerAdapter {
 
 		@Autowired
 		@Qualifier("authenticationManagerBean")
@@ -81,6 +73,11 @@ public class OAuth2ServerConfiguration {
 
 		@Autowired
 		private DataSource dataSource;
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
 
 		@Bean
 		public JdbcTokenStore tokenStore() {
@@ -98,12 +95,10 @@ public class OAuth2ServerConfiguration {
 		}
 
 		@Override
-		public void configure(AuthorizationServerEndpointsConfigurer endpoints)
-				throws Exception {
+		public void configure(AuthorizationServerEndpointsConfigurer endpoints)  throws Exception {
 			// @formatter:off
 			endpoints
 					.authorizationCodeServices(authorizationCodeServices())
-//				.tokenStore(this.tokenStore)
 					.tokenStore(tokenStore())
 					.authenticationManager(this.authenticationManager)
 					.userDetailsService(userDetailsService);
@@ -114,35 +109,15 @@ public class OAuth2ServerConfiguration {
 		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 			// @formatter:off
 			clients
-//                    .withClientDetails(userDetailsService)
 					.jdbc(dataSource)
-					.passwordEncoder(passwordEncoder())
-//				.inMemory()
+                        .passwordEncoder(passwordEncoder())
 					.withClient("clientapp")
-					.authorizedGrantTypes("password", "refresh_token")
-					.authorities("USER")
-					.scopes("read", "write")
-					.resourceIds(RESOURCE_ID)
-					.secret("123456");
+						.authorizedGrantTypes("password", "refresh_token")
+						.authorities("USER")
+					    .scopes("read", "write")
+					    .resourceIds(RESOURCE_ID)
+					    .secret("secret");
 			// @formatter:on
 		}
-
-//		@Bean
-//        @Primary
-//        public TokenBasedRememberMeServices tokenBasedRememberMeServices() {
-//		    return new TokenBasedRememberMeServices("key", userDetailsService);
-//        }
-
-		@Bean
-		@Primary
-		public DefaultTokenServices tokenServices() {
-			DefaultTokenServices tokenServices = new DefaultTokenServices();
-			tokenServices.setSupportRefreshToken(true);
-//			tokenServices.setTokenStore(this.tokenStore);
-			tokenServices.setTokenStore(tokenStore());
-			return tokenServices;
-		}
-
 	}
-
 }

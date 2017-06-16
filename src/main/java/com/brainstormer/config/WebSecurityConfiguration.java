@@ -2,8 +2,10 @@ package com.brainstormer.config;
 
 import com.brainstormer.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+// This is needed to get authentication to work
+// Not 100% sure why, might want to look into spring docs
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -28,13 +33,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().disable()
                 .logout()
-                .logoutUrl("/logout");
+                .logoutUrl("/logout"); // TODO: this doesn't actuallly work, need to manually implement
+        // look here for how to do it: https://stackoverflow.com/questions/21987589/spring-security-how-to-log-out-user-revoke-oauth2-token
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider()).userDetailsService(userDetailsService);
-//		 auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -42,7 +47,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 
     // This is needed to have proper reading from the database for initial authentication
     @Bean
