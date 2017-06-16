@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
@@ -29,23 +32,23 @@ public class TestDataSourceConfig {
                 .build();
     }
 
-//    /**
-//     * Creates a manager for entities that will create tables in the database for the specified entity in the
-//     * transaction if there are no tables for the entity currently in the database.
-//     * @return
-//     *  EntityManagerFactory that does the above.
-//     */
-//    @Bean
-//    public EntityManagerFactory entityManagerFactory() {
-//        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-//        vendorAdapter.setGenerateDdl(true);
-//
-//        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-//        factory.setJpaVendorAdapter(vendorAdapter);
-//        factory.setPackagesToScan("com.brainstormer");
-//        factory.setDataSource(dataSource());
-//        factory.afterPropertiesSet();
-//
-//        return factory.getObject();
-//    }
+    /**
+     * Creates a manager for entities that will create tables in the database for the specified entity in the
+     * transaction if there are no tables for the entity currently in the database.
+     * @return
+     *  EntityManagerFactory that does the above.
+     */
+    @Bean
+    public EntityManagerFactory entityManagerFactory() {
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(true);
+
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setPackagesToScan("com.brainstormer");
+        factory.setDataSource(dataSource());
+        factory.afterPropertiesSet();
+
+        return factory.getObject();
+    }
 }

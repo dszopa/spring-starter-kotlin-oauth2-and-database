@@ -1,43 +1,66 @@
 buildscript {
-	ext {
-		springBootVersion = '1.5.3.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/plugins-release" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.0.RC1")
+    }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
+//buildscript {
+//    ext {
+//        springBootVersion = '1.5.3.RELEASE'
+//    }
+//    repositories {
+//        mavenCentral()
+//    }
+//    dependencies {
+//        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+//    }
+//}
 
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "spring-boot"
+//apply plugin: 'org.springframework.boot'
+apply plugin: "war"
+
+jar {
+    baseName = "spring-rest-service-oauth"
+    version =  "0.1.0"
+}
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+    maven { url "https://repo.spring.io/libs-release" }
 }
 
 dependencies {
-    // Spring
-    compile('org.springframework.boot:spring-boot-devtools')
+
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-data-rest")
 
-     // Database
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    runtime('com.h2database:h2')
-    runtime('mysql:mysql-connector-java')
-
-    // Spring Security
-    compile 'org.springframework.security:spring-security-web'
+    // Security
+    compile("org.springframework.boot:spring-boot-starter-security")
     compile 'org.springframework.security:spring-security-config'
-    compile 'org.springframework.security.oauth:spring-security-oauth2'
+    compile("org.springframework.security.oauth:spring-security-oauth2")
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    // Database
+//	compile("org.hsqldb:hsqldb")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    runtime('com.h2database:h2')
+
+
+//    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("com.jayway.jsonpath:json-path")
+    testCompile("com.jayway.jsonpath:json-path-assert")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.7"
 }
 
 task bootRunTest(type: org.springframework.boot.gradle.run.BootRunTask, dependsOn: 'compileJava') {
@@ -48,4 +71,3 @@ task bootRunTest(type: org.springframework.boot.gradle.run.BootRunTask, dependsO
         systemProperty 'spring.profiles.active', 'test'
     }
 }
-
