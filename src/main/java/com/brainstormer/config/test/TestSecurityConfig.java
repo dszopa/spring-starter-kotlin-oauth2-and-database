@@ -1,10 +1,11 @@
-package com.brainstormer.config;
+package com.brainstormer.config.test;
 
 import com.brainstormer.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,12 +15,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Profile("test")
 @Configuration
 @EnableWebSecurity
 // This is needed to get authentication to work
 // Not 100% sure why, might want to look into spring docs
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -27,14 +29,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest().permitAll()
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .authorizeRequests().antMatchers("/").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/console/**").permitAll() // TODO: need to disable this on production build
+                .and()
+                .headers().frameOptions().sameOrigin()
                 .and()
                 .formLogin().disable()
-                .logout()
-                .logoutUrl("/logout"); // TODO: this doesn't actuallly work, need to manually implement
-        // look here for how to do it: https://stackoverflow.com/questions/21987589/spring-security-how-to-log-out-user-revoke-oauth2-token
+                .logout().logoutUrl("/logout"); // TODO: this doesn't actuallly work, need to manually implement
+                 // look here for how to do it: https://stackoverflow.com/questions/21987589/spring-security-how-to-log-out-user-revoke-oauth2-token
+
+        httpSecurity.headers().frameOptions().sameOrigin();
+        httpSecurity.csrf().disable();
     }
 
     @Override
@@ -57,4 +65,3 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return authenticationProvider;
     }
 }
-

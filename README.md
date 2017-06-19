@@ -10,7 +10,7 @@ The backend for the **Brainstormer** project
 # Running the Application
 You can run the application in production mode by executing the gradle task 
 
-```bootRun```
+```bootRunProd```
 
 You can run the application in test mode, with a test database that is populated by schema.sql by executing the gradle task 
 

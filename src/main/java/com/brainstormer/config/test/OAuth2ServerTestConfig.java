@@ -1,4 +1,4 @@
-package com.brainstormer.config;
+package com.brainstormer.config.test;
 
 
 import com.brainstormer.service.CustomUserDetailsService;
@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,12 +27,14 @@ import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import javax.sql.DataSource;
 
 @Configuration
-public class OAuth2ServerConfiguration {
+@Profile("test")
+public class OAuth2ServerTestConfig {
 
     // TODO: come up with a real Resource Id
 	private static final String RESOURCE_ID = "restservice";
 
-	@Configuration
+    @Profile("test")
+    @Configuration
 	@EnableResourceServer
 	protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
@@ -52,15 +55,19 @@ public class OAuth2ServerConfiguration {
 		    // TODO: want to move this config out possibly and do per-method config
 			// @formatter:off
 			http
+					.headers().frameOptions().sameOrigin()
+                    .and()
 					.authorizeRequests()
+                        .antMatchers("/console/**").permitAll()
+                        .antMatchers("/**").fullyAuthenticated()
 					    .antMatchers("/users").hasRole("ADMIN")
 					    .antMatchers("/greeting").hasRole("ADMIN");
 			// @formatter:on
 		}
-
 	}
 
-	@Configuration
+    @Profile("test")
+    @Configuration
 	@EnableAuthorizationServer
 	protected static class AuthorizationServerConfiguration extends  AuthorizationServerConfigurerAdapter {
 

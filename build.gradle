@@ -24,6 +24,9 @@ repositories {
 
 dependencies {
 
+    // Dev
+    compile("org.springframework.boot:spring-boot-devtools")
+
     // Web
     compile("org.springframework.boot:spring-boot-starter-web")
 
@@ -34,7 +37,7 @@ dependencies {
 
     // Database
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtime('com.h2database:h2')
+    compile('com.h2database:h2')
     runtime('mysql:mysql-connector-java')
 
     // Test
@@ -54,5 +57,14 @@ task bootRunTest(type: BootRunTask, dependsOn: 'compileJava') {
         main = project.mainClassName
         classpath = sourceSets.main.runtimeClasspath
         systemProperty 'spring.profiles.active', 'test'
+    }
+}
+
+task bootRunProd(type: BootRunTask, dependsOn: 'compileJava') {
+    group = 'Application'
+    doFirst() {
+        main = project.mainClassName
+        classpath = sourceSets.main.runtimeClasspath
+        systemProperty 'spring.profiles.active', 'prod'
     }
 }
