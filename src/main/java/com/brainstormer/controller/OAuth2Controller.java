@@ -30,7 +30,7 @@ public class OAuth2Controller {
 
     @RequestMapping(value = "/oauth/revoke-token", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public void logout(Principal principal) throws IOException {
+    public void logout(Principal principal) {
         OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
         OAuth2AccessToken accessToken = authorizationServerTokenServices.getAccessToken(oAuth2Authentication);
         consumerTokenServices.revokeToken(accessToken.getValue());
