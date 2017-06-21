@@ -24,7 +24,7 @@ class CustomUserDetailsService (val userRepository: UserRepository) : UserDetail
             return roles
         }
 
-        override fun getUsername(): String {
+        override fun getUsername(): String? {
             return login
         }
 
