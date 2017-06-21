@@ -36,9 +36,7 @@ public class ProdSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .headers().frameOptions().sameOrigin()
                 .and()
-                .formLogin().disable()
-                .logout().logoutUrl("/logout"); // TODO: this doesn't actuallly work, need to manually implement
-                 // look here for how to do it: https://stackoverflow.com/questions/21987589/spring-security-how-to-log-out-user-revoke-oauth2-token
+                .formLogin().disable();
     }
 
     @Override
