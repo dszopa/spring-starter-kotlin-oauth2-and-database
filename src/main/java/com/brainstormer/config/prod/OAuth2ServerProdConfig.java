@@ -30,8 +30,7 @@ import javax.sql.DataSource;
 @Profile("prod")
 public class OAuth2ServerProdConfig {
 
-    // TODO: come up with a real Resource Id
-    private static final String RESOURCE_ID = "restservice";
+    private static final String RESOURCE_ID = "brainstormer_backend";
 
     @Profile("prod")
     @Configuration
@@ -52,13 +51,10 @@ public class OAuth2ServerProdConfig {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            // TODO: want to move this config out possibly and do per-method config
             // @formatter:off
             http
                     .authorizeRequests()
-                    .antMatchers("/**").fullyAuthenticated()
-                    .antMatchers("/users").hasRole("ADMIN")
-                    .antMatchers("/greeting").hasRole("ADMIN");
+                    .antMatchers("/**").fullyAuthenticated();
             // @formatter:on
         }
     }
@@ -66,7 +62,7 @@ public class OAuth2ServerProdConfig {
     @Profile("prod")
     @Configuration
     @EnableAuthorizationServer
-    protected static class AuthorizationServerConfiguration extends  AuthorizationServerConfigurerAdapter {
+    protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
         @Autowired
         @Qualifier("authenticationManagerBean")
@@ -99,7 +95,7 @@ public class OAuth2ServerProdConfig {
         }
 
         @Override
-        public void configure(AuthorizationServerEndpointsConfigurer endpoints)  throws Exception {
+        public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
             // @formatter:off
             endpoints
                     .authorizationCodeServices(authorizationCodeServices())
@@ -115,12 +111,19 @@ public class OAuth2ServerProdConfig {
             clients
                     .jdbc(dataSource)
                     .passwordEncoder(passwordEncoder())
-                    .withClient("clientapp")
-                    .authorizedGrantTypes("password", "refresh_token")
-                    .authorities("USER")
-                    .scopes("read", "write")
-                    .resourceIds(RESOURCE_ID)
-                    .secret("secret");
+                    .withClient("brainstormer_mobile")
+                        .authorizedGrantTypes("password", "refresh_token")
+                        .authorities("USER")
+                        .scopes("read", "write")
+                        .resourceIds(RESOURCE_ID)
+                        .secret("bsm_secret")
+                    .and()
+                    .withClient("brainstormer_web_frontend")
+                        .authorizedGrantTypes("password", "refresh_token")
+                        .authorities("USER")
+                        .scopes("read", "write")
+                        .resourceIds(RESOURCE_ID)
+                        .secret("bswf_secret");
             // @formatter:on
         }
     }

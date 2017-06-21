@@ -47,8 +47,7 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    // TODO: update this to 4.0.x sometime
-    gradleVersion = "3.4.1"
+    gradleVersion = "4.1-milestone-1"
 }
 
 task bootRunTest(type: BootRunTask, dependsOn: 'compileJava') {

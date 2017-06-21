@@ -30,101 +30,108 @@ import javax.sql.DataSource;
 @Profile("test")
 public class OAuth2ServerTestConfig {
 
-    // TODO: come up with a real Resource Id
-	private static final String RESOURCE_ID = "restservice";
+    private static final String RESOURCE_ID = "brainstormer_backend";
 
     @Profile("test")
     @Configuration
-	@EnableResourceServer
-	protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+    @EnableResourceServer
+    protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-		@Autowired
-		private TokenStore tokenStore;
+        @Autowired
+        private TokenStore tokenStore;
 
-		@Override
-		public void configure(ResourceServerSecurityConfigurer resources) {
-			// @formatter:off
-			resources
+        @Override
+        public void configure(ResourceServerSecurityConfigurer resources) {
+            // @formatter:off
+            resources
                     .tokenStore(tokenStore)
-					.resourceId(RESOURCE_ID);
-			// @formatter:on
-		}
+                    .resourceId(RESOURCE_ID);
+            // @formatter:on
+        }
 
-		@Override
-		public void configure(HttpSecurity http) throws Exception {
-		    // TODO: want to move this config out possibly and do per-method config
-			// @formatter:off
-			http
-					.headers().frameOptions().sameOrigin()
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+            // @formatter:off
+            http
+                    .headers().frameOptions().sameOrigin()
                     .and()
-					.authorizeRequests()
-                        .antMatchers("/console/**").permitAll()
-                        .antMatchers("/**").fullyAuthenticated()
-					    .antMatchers("/users").hasRole("ADMIN")
-					    .antMatchers("/greeting").hasRole("ADMIN");
-			// @formatter:on
-		}
-	}
+                    .authorizeRequests()
+                    .antMatchers("/console/**").permitAll()
+                    .antMatchers("/**").fullyAuthenticated();
+            // @formatter:on
+        }
+    }
 
     @Profile("test")
     @Configuration
-	@EnableAuthorizationServer
-	protected static class AuthorizationServerConfiguration extends  AuthorizationServerConfigurerAdapter {
+    @EnableAuthorizationServer
+    protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
-		@Autowired
-		@Qualifier("authenticationManagerBean")
-		private AuthenticationManager authenticationManager;
+        @Autowired
+        @Qualifier("authenticationManagerBean")
+        private AuthenticationManager authenticationManager;
 
-		@Autowired
-		private CustomUserDetailsService userDetailsService;
+        @Autowired
+        private CustomUserDetailsService userDetailsService;
 
-		@Autowired
-		private DataSource dataSource;
+        @Autowired
+        private DataSource dataSource;
 
         @Bean
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
         }
 
-		@Bean
-		public JdbcTokenStore tokenStore() {
-			return new JdbcTokenStore(dataSource);
-		}
+        @Bean
+        public JdbcTokenStore tokenStore() {
+            return new JdbcTokenStore(dataSource);
+        }
 
-		@Bean
-		protected AuthorizationCodeServices authorizationCodeServices() {
-			return new JdbcAuthorizationCodeServices(dataSource);
-		}
+        @Bean
+        protected AuthorizationCodeServices authorizationCodeServices() {
+            return new JdbcAuthorizationCodeServices(dataSource);
+        }
 
-		@Override
-		public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-			security.passwordEncoder(passwordEncoder());
-		}
+        @Override
+        public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+            security.passwordEncoder(passwordEncoder());
+        }
 
-		@Override
-		public void configure(AuthorizationServerEndpointsConfigurer endpoints)  throws Exception {
-			// @formatter:off
-			endpoints
-					.authorizationCodeServices(authorizationCodeServices())
-					.tokenStore(tokenStore())
-					.authenticationManager(this.authenticationManager)
-					.userDetailsService(userDetailsService);
-			// @formatter:on
-		}
+        @Override
+        public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+            // @formatter:off
+            endpoints
+                    .authorizationCodeServices(authorizationCodeServices())
+                    .tokenStore(tokenStore())
+                    .authenticationManager(this.authenticationManager)
+                    .userDetailsService(userDetailsService);
+            // @formatter:on
+        }
 
-		@Override
-		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-			// @formatter:off
-			clients
-					.jdbc(dataSource)
-                        .passwordEncoder(passwordEncoder())
-					.withClient("clientapp")
-						.authorizedGrantTypes("password", "refresh_token")
-						.authorities("USER")
-					    .scopes("read", "write")
-					    .resourceIds(RESOURCE_ID)
-					    .secret("secret");
-			// @formatter:on
-		}
-	}
+        @Override
+        public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+            // @formatter:off
+            clients
+                    .jdbc(dataSource)
+                    .passwordEncoder(passwordEncoder())
+                    .withClient("brainstormer_mobile")
+                        .authorizedGrantTypes("password", "refresh_token")
+                        .authorities("USER")
+                        .scopes("read", "write")
+                        .resourceIds(RESOURCE_ID)
+                        .secret("bsm_secret")
+                        .accessTokenValiditySeconds(0)
+                        .refreshTokenValiditySeconds(0)
+                    .and()
+                    .withClient("brainstormer_web_frontend")
+                        .authorizedGrantTypes("password", "refresh_token")
+                        .authorities("USER")
+                        .scopes("read", "write")
+                        .resourceIds(RESOURCE_ID)
+                        .secret("bswf_secret")
+                        .accessTokenValiditySeconds(0)
+                        .refreshTokenValiditySeconds(0);
+            // @formatter:on
+        }
+    }
 }

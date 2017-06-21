@@ -33,7 +33,7 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests().antMatchers("/").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/console/**").permitAll() // TODO: need to disable this on production build
+                .authorizeRequests().antMatchers("/console/**").permitAll()
                 .and()
                 .headers().frameOptions().sameOrigin()
                 .and()
