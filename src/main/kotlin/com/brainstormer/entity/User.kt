@@ -1,11 +1,10 @@
 package com.brainstormer.entity
 
-import org.codehaus.jackson.annotate.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.validator.constraints.NotEmpty
 import java.io.Serializable
 import java.util.*
 import javax.persistence.*
-
 
 @Entity
 open class User (

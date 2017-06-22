@@ -18,7 +18,7 @@ class Role (
 
         // This can't be Set<User> as Set<User> means Set<? extends User> in java and we want Set<User> which MutableSet provides
         @JsonIgnore
-        @ManyToMany(mappedBy = "roles")
+        @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
         var users: MutableSet<User> = HashSet()
 
 ): Serializable, GrantedAuthority {
