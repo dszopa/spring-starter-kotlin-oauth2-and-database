@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @PreAuthorize("hasRole('ADMIN')")
-class UserController (val repository:UserRepository) {
+class UserController (
+        private val repository:UserRepository
+) {
 
     @GetMapping("/users")
     fun findAll(): List<User>? = repository.findAll()

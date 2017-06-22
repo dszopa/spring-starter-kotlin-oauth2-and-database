@@ -14,8 +14,8 @@ import java.security.Principal
 @RestController
 @PreAuthorize("isFullyAuthenticated()")
 class OAuth2Controller (
-        val authorizationServerTokenServices:AuthorizationServerTokenServices,
-        val consumerTokenServices:ConsumerTokenServices
+        private val authorizationServerTokenServices:AuthorizationServerTokenServices,
+        private val consumerTokenServices:ConsumerTokenServices
 ) {
     @GetMapping("/oauth/revoke-token")
     @ResponseStatus(HttpStatus.OK)

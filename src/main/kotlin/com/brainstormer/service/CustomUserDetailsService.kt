@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service
 import java.io.Serializable
 
 @Service
-class CustomUserDetailsService (val userRepository: UserRepository) : UserDetailsService {
+class CustomUserDetailsService (
+        private val userRepository: UserRepository
+) : UserDetailsService {
 
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(username: String): UserDetails {
