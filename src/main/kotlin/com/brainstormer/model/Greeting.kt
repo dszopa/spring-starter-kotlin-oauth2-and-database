@@ -1,6 +1,6 @@
 package com.brainstormer.model
 
-class Greeting(
+data class Greeting(
         val id: Long,
         val content: String
 )

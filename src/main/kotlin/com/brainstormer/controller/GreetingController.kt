@@ -16,6 +16,6 @@ class  GreetingController {
 
     @GetMapping("/greeting")
     fun greeting(@AuthenticationPrincipal user: User): Greeting{
-        return Greeting(counter.incrementAndGet(), "Hello, " + user.name + "s!")
+        return Greeting(counter.incrementAndGet(), "Hello, ${user.name}!")
     }
 }
