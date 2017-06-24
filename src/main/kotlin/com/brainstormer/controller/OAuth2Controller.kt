@@ -20,7 +20,7 @@ class OAuth2Controller (
     @GetMapping("/oauth/revoke-token")
     @ResponseStatus(HttpStatus.OK)
     fun logout(principal: Principal) {
-        val accessToken : OAuth2AccessToken = authorizationServerTokenServices.getAccessToken(principal as OAuth2Authentication);
+        val accessToken: OAuth2AccessToken = authorizationServerTokenServices.getAccessToken(principal as OAuth2Authentication);
         consumerTokenServices.revokeToken(accessToken.value);
     }
 }
