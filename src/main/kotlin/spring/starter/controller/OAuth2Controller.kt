@@ -1,4 +1,4 @@
-package com.brainstormer.controller
+package spring.starter.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize

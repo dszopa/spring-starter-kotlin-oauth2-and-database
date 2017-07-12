@@ -1,6 +1,6 @@
-package com.brainstormer.config.test
+package spring.starter.config.prod
 
-import com.brainstormer.service.CustomUserDetailsService
+import spring.starter.service.CustomUserDetailsService
 import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,26 +14,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.password.PasswordEncoder
 
-@Profile("test")
+@Profile("prod")
 @Configuration
 @EnableWebSecurity
 // This is needed to get authentication to work
 // Not 100% sure why, might want to look into spring docs
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-class TestSecurityConfig(
-        private val userDetailsService: CustomUserDetailsService,
-        private val passwordEncoder: PasswordEncoder
+class ProdSecurityConfig(
+        private var userDetailsService: CustomUserDetailsService,
+        private var passwordEncoder: PasswordEncoder
 ) : WebSecurityConfigurerAdapter() {
 
     @Throws(exceptionClasses = Exception::class)
     override fun configure(httpSecurity: HttpSecurity) {
-        httpSecurity.headers().frameOptions().sameOrigin()
         httpSecurity.csrf().disable()
 
         httpSecurity
                 .authorizeRequests().antMatchers("/").permitAll()
-                .and()
-                .authorizeRequests().antMatchers("/console/**").permitAll()
                 .and()
                 .headers().frameOptions().sameOrigin()
                 .and()

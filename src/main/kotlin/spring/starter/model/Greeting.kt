@@ -1,4 +1,4 @@
-package com.brainstormer.model
+package spring.starter.model
 
 data class Greeting(
         val id: Long,

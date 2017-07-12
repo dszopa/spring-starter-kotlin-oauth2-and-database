@@ -1,6 +1,6 @@
-# Brainstormer-Backend
+# Spring-Starter-Kotlin-OAuth2-And-Database
 
-The backend for the **Brainstormer** project
+A starter backend for a Spring Boot Project.
 
 # Features
 - Spring OAuth2 Security
@@ -22,7 +22,3 @@ You can run the application in test mode, with a test database that is populated
 `bootRunTest`
 
 The test database able to be accessed by going to `localhost:8080/console`
-
-# TODO
-- Plan out what is needed in terms of entities & database relations
-- Provide an API to power `Brainstormer-Frontend` and `Brainstormer-Mobile`

@@ -1,4 +1,4 @@
-package com.brainstormer.config.test
+package spring.starter.config.test
 
 import org.h2.server.web.WebServlet
 import org.springframework.boot.web.servlet.ServletRegistrationBean

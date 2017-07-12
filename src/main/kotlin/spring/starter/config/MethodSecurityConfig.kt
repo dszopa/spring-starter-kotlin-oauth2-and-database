@@ -1,4 +1,4 @@
-package com.brainstormer.config
+package spring.starter.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler

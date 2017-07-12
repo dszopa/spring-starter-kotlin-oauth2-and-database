@@ -234,5 +234,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-!/src/main/java/com/brainstormer/BrainstormerBackendApplication.java

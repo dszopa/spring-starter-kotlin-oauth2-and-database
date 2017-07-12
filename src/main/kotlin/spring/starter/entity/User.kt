@@ -1,4 +1,4 @@
-package com.brainstormer.entity
+package spring.starter.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.validator.constraints.NotEmpty
